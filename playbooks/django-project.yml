@@ -1,0 +1,77 @@
+- hosts: us-west-2c
+  remote_user: ubuntu
+  become: yes
+  become_method: sudo
+
+  environment:
+    SECRET_KEY: '{{ SECRET_KEY }}'
+    DB_NAME: '{{ DB_NAME }}'
+    DB_HOST: '{{ DB_HOST }}'
+    DB_USER: '{{ DB_USER }}'
+    DB_PASSWORD: '{{ DB_PASSWORD }}'
+
+    AWS_STORAGE_BUCKET_NAME: '{{ AWS_STORAGE_BUCKET_NAME }}'
+    AWS_ACCESS_KEY_ID: '{{ AWS_ACCESS_KEY_ID }}'
+    AWS_SECRET_ACCESS_KEY: '{{ AWS_SECRET_ACCESS_KEY }}'
+
+  tasks:
+    - name: Update the Ubuntu system and services
+      apt: update_cache=yes
+
+    - name: Ugrade the Ubuntu system and services
+      apt: upgrade=full
+
+    - name: Install Basic Unix-level Services
+      apt: name={{ item }} state=latest
+      with_items:
+        - nginx
+        - python3
+        - python-pip
+        - build-essential
+        - python3-pip
+        - python3.4-venv
+        - git
+        - python-dev
+        - libpq-dev
+        - libtiff5-dev
+        - libjpeg8-dev
+        - zlib1g-dev
+        - libfreetype6-dev
+        - liblcms2-dev
+        - libwebp-dev
+        - tcl8.6-dev
+        - tk8.6-dev
+        - python-tk
+        - gunicorn
+
+    - name: Clone the Book App to the Home Directory
+      git: clone=yes repo=https://github.com/carloscadena/django-imager.git dest=/home/ubuntu/django-imager version=deployment force=yes
+
+    - name: Install app
+      pip: requirements=/home/ubuntu/django-imager/requirements.pip
+
+    - name: Register the old default file
+      stat: path=/etc/nginx/sites-available/default.old
+      register: default_stat
+
+    - name: Rename old default file
+      command: mv /etc/nginx/sites-available/default /etc/nginx/sites-available/default.old
+      when: not default_stat.stat.exists
+
+    - name: Create a new default file for nginx
+      template: src=../templates/nginx_config.jinja2 dest=/etc/nginx/sites-available/default
+
+    - name: Restart nginx service
+      service: name=nginx state=restarted
+
+    - name: Copy upstart script into /etc/init
+      template: src=../templates/upstart_config.jinja2 dest=/etc/init/django-imager.conf
+
+    - name: Restart the django app upstart job
+      service: name=django-imager state=restarted
+
+    - name: Django migrate
+      django_manage: command=migrate app_path=/home/ubuntu/django-imager/imagersite
+
+    - name: Django collectstatic
+      django_manage: command=collectstatic app_path=/home/ubuntu/django-imager/imagersite
