@@ -1,0 +1,22 @@
+[us-west-2c]
+<Your EC2 instance IP Address> EC2_PUBLIC_DNS=<Your EC2 instance Public DNS>
+
+[us-west-2c:vars]
+ansible_ssh_user=ubuntu
+ansible_ssh_private_key_file=~/.ssh/<name of you saved pem file>.pem
+
+SECRET_KEY=q0c1+%h#q%v!q#+$8jlz1$lfoe3e@b7fcj4(@@*u0von&!d5q)
+
+DB_HOST=<your RDS dns address>
+DB_NAME=<your RDS db name>
+DB_USER=<your RDS db user name>
+DB_PASSWORD=<your RDS db password>
+
+AWS_STORAGE_BUCKET_NAME=<your S3 bucket name>
+AWS_ACCESS_KEY_ID=<your IAM user id>
+AWS_SECRET_ACCESS_KEY=<your IAM user key>
+
+EMAIL_PASSWORD=<your Gmail password>
+EMAIL_HOST_USER=<your Gmail user name>
+DEFAULT_FROM_EMAIL=<your Gmail email address>
+DEFAULT_TO_EMAIL=<defualt email to send to>
