@@ -45,7 +45,7 @@
         - gunicorn
 
     - name: Clone the Book App to the Home Directory
-      git: clone=yes repo=https://github.com/carloscadena/django-imager.git dest=/home/ubuntu/django-imager version=deployment force=yes
+      git: clone=yes repo=https://github.com/carloscadena/django-imager.git dest=/home/ubuntu/django-imager version=master force=yes
 
     - name: Install app
       pip: requirements=/home/ubuntu/django-imager/requirements.pip
