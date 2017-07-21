@@ -20,3 +20,8 @@ EMAIL_PASSWORD=<your Gmail password>
 EMAIL_HOST_USER=<your Gmail user name>
 DEFAULT_FROM_EMAIL=<your Gmail email address>
 DEFAULT_TO_EMAIL=<defualt email to send to>
+
+SOCIAL_AUTH_GITHUB_KEY=<github key>
+SOCIAL_AUTH_GITHUB_SECRET=<github secret>
+SOCIAL_AUTH_TWITTER_KEY=<twitter key>
+SOCIAL_AUTH_TWITTER_SECRET=<twitter secret>
